@@ -1,9 +1,0 @@
-{
-  "name": "dog_info_server",
-  "version": "1.0.0",
-  "main": "api/dog-info.js",
-  "license": "MIT",
-  "scripts": {
-    "start": "vercel dev"
-  }
-}
