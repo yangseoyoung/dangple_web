@@ -26,11 +26,10 @@
       overflow-x: auto;
       padding: 10px 0;
       gap: 10px;
-      scrollbar-width: none; /* For Firefox */
-      -ms-overflow-style: none; /* For Internet Explorer and Edge */
+      scrollbar-width: none;
     }
     .tabs::-webkit-scrollbar {
-      display: none; /* For Chrome, Safari, and Opera */
+      display: none;
     }
     .tab {
       flex: 0 0 auto;
@@ -121,61 +120,31 @@
     <div class="content" id="content">
       <img src="./img_dog_web_1.png" alt="댕댕이 이미지">
       <h2>0-1개월 (신생아기)</h2>
-      <p>
-        신생아 강아지에게는 모든 것이 새롭고, 어미에게 의존할 수밖에 없는 시기예요. 눈을 뜨지 못하고 스스로 체온을 조절하지 못하기 때문에 따뜻한 환경을 만들어주는 것이 중요해요. 
-        분유로 영양을 보충해주면서 배변 유도도 도와줘야 한답니다.
-      </p>
-      <p>
-        저체온증이 오지 않게 체온을 유지해주고, 저혈당과 탈수를 예방하기 위해 영양 공급을 충분히 해주는 게 중요해요.
-        출생 직후, 병원에 방문해서 어미와 강아지의 건강 상태를 점검해주세요.
-      </p>
-
-      <!-- Popular Content Section -->
-      <div class="popular-content">
-        <h3>지금 시기에 인기있는 콘텐츠</h3>
-        <div class="thumbnails">
-          <a href="https://www.youtube.com/watch?v=NYUb8fn8aYw" target="_blank">
-            <img src="https://img.youtube.com/vi/NYUb8fn8aYw/1.jpg" alt="썸네일 1">
-          </a>
-          <a href="https://www.youtube.com/watch?v=NYUb8fn8aYw" target="_blank">
-            <img src="https://img.youtube.com/vi/NYUb8fn8aYw/2.jpg" alt="썸네일 2">
-          </a>
-          <a href="https://www.youtube.com/watch?v=NYUb8fn8aYw" target="_blank">
-            <img src="https://img.youtube.com/vi/NYUb8fn8aYw/3.jpg" alt="썸네일 3">
-          </a>
-        </div>
-      </div>
+      <p>데이터를 불러오는 중입니다...</p>
     </div>
   </div>
 
   <script>
     const tabs = document.querySelectorAll('.tab');
     const content = document.getElementById('content');
-
-    const data = {
-      "0-1개월": {
-        img: "./img_dog_web_1.png",
-        title: "0-1개월 (신생아기)",
-        description: `
-          <p>신생아 강아지에게는 모든 것이 새롭고, 어미에게 의존할 수밖에 없는 시기예요. 눈을 뜨지 못하고 스스로 체온을 조절하지 못하기 때문에 따뜻한 환경을 만들어주는 것이 중요해요. 
-          분유로 영양을 보충해주면서 배변 유도도 도와줘야 한답니다.</p>
-          <p>저체온증이 오지 않게 체온을 유지해주고, 저혈당과 탈수를 예방하기 위해 영양 공급을 충분히 해주는 게 중요해요.
-          출생 직후, 병원에 방문해서 어미와 강아지의 건강 상태를 점검해주세요.</p>
-        `
-      },
-      // Add other data here...
-    };
+    const apiBaseUrl = "https://your-vercel-app.vercel.app/api/dog-info"; // 서버 URL
 
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
+      tab.addEventListener('click', async () => {
         // 탭 활성화
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
 
-        // 콘텐츠 업데이트
+        // 서버에서 데이터 가져오기
         const id = tab.dataset.id;
-        const selectedData = data[id];
-        if (selectedData) {
+        try {
+          const response = await fetch(`${apiBaseUrl}?id=${id}`);
+          if (!response.ok) {
+            throw new Error("데이터를 가져오는데 실패했습니다.");
+          }
+          const selectedData = await response.json();
+
+          // 콘텐츠 업데이트
           content.innerHTML = `
             <img src="${selectedData.img}" alt="댕댕이 이미지">
             <h2>${selectedData.title}</h2>
@@ -190,4 +159,21 @@
                 <a href="https://www.youtube.com/watch?v=NYUb8fn8aYw" target="_blank">
                   <img src="https://img.youtube.com/vi/NYUb8fn8aYw/2.jpg" alt="썸네일 2">
                 </a>
-                <a href="https://www.youtube
+                <a href="https://www.youtube.com/watch?v=NYUb8fn8aYw" target="_blank">
+                  <img src="https://img.youtube.com/vi/NYUb8fn8aYw/3.jpg" alt="썸네일 3">
+                </a>
+              </div>
+            </div>
+          `;
+        } catch (error) {
+          console.error("에러 발생:", error);
+          content.innerHTML = `<p>데이터를 불러오는 중 문제가 발생했습니다.</p>`;
+        }
+      });
+    });
+
+    // 기본 데이터 로드
+    document.querySelector('.tab.active').click();
+  </script>
+</body>
+</html>
