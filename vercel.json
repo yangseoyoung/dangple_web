@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/dog-info",
+      "dest": "/api/dog-info.js"
+    }
+  ]
+}
